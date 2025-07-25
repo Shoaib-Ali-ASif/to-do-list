@@ -8,17 +8,33 @@ import { RouterOutlet } from '@angular/router';
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
-export class App {
-  task="";
-  taskList:{id:number,task:string}[]=[]
+  
+  export class App {
+  task = '';
+  taskList: { id: number; task: string }[] = [];
+  constructor() {
+    const localItem = localStorage.getItem('MT');
+    this.taskList = localItem ? JSON.parse(localItem) : [];
+  }
 
-addTask(){
-  this.taskList.push({id:this.taskList.length+1,task:this.task})
-  this.task=""
-}
-deleteTask(taskId:number){
-  this.taskList=this.taskList.filter((item)=>item.id!=taskId)
+  addTask() {
+    if (this.task.trim() === '') {
+      alert('Enter Task');
+      return;
+    }
 
+    const newTask = {
+      id: this.taskList.length + 1,
+      task: this.task,
+    };
 
-}
+    this.taskList.push(newTask);
+    localStorage.setItem('MT', JSON.stringify(this.taskList));
+    this.task = '';
+  }
+
+  deleteTask(taskId: number) {
+    this.taskList = this.taskList.filter((item) => item.id !== taskId);
+    localStorage.setItem('MT', JSON.stringify(this.taskList)); // ✅ update after delete
+  }
 }
